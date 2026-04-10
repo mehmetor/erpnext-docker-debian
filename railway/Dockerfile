@@ -63,6 +63,8 @@ RUN echo "-> Install nginx & supervisor" \
     && rm -rf /var/lib/apt/lists/* \
     && echo "-> Remove nginx default site" \
     && rm /etc/nginx/sites-enabled/default \
+    && echo "-> Installing frappe-bench CLI" \
+    && /home/$systemUser/.pyenv/versions/3.11.6/bin/pip3 install frappe-bench \
     && echo "-> Rebuilding bench" \
     && su $systemUser -c "bench build" \
     && su $systemUser -c "cp -r /home/$systemUser/$benchFolderName/sites /home/$systemUser/$benchFolderName/built_sites"
