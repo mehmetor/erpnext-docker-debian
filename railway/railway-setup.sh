@@ -23,5 +23,19 @@ bench --site ${RFP_DOMAIN_NAME} set-config db_host "${FRAPPE_DB_HOST}"
 bench --site ${RFP_DOMAIN_NAME} set-config redis_cache "${FRAPPE_REDIS_CACHE}"
 bench --site ${RFP_DOMAIN_NAME} set-config redis_queue "${FRAPPE_REDIS_QUEUE}"
 
+echo "-> Adding redis_cache / redis_queue to common_site_config.json"
+/home/frappe/bench/env/bin/python3 << 'PYEOF'
+import json, os
+
+path = "/home/frappe/bench/sites/common_site_config.json"
+with open(path) as f:
+    common = json.load(f)
+common["redis_cache"] = os.environ["FRAPPE_REDIS_CACHE"]
+common["redis_queue"] = os.environ["FRAPPE_REDIS_QUEUE"]
+with open(path, "w") as f:
+    json.dump(common, f, indent=1)
+PYEOF
+chown frappe:frappe /home/frappe/bench/sites/common_site_config.json
+
 echo "-> Enable scheduler"
 bench enable-scheduler
